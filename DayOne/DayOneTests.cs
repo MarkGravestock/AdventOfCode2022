@@ -9,7 +9,13 @@ public class DayOneTests
     [Fact]
     public void the_elf_with_the_most_calories_is_number_four()
     {
-       sut.ElfWithMaximumCalories().Should().Be(4);
+       sut.ElfWithMaximumCalories().Number.Should().Be(4);
+    }
+
+    [Fact]
+    public void the_elf_with_the_most_calorie_has_twenty_four_thousand_calories()
+    {
+        sut.ElfWithMaximumCalories().Calories.Should().Be(24_000);
     }
 
     [Fact]

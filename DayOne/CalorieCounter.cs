@@ -1,5 +1,7 @@
 namespace DayOne;
 
+public readonly record struct ElfCalories(int Number, int Calories);
+
 public class CalorieCounter
 {
     private readonly string fileName;
@@ -17,21 +19,22 @@ public class CalorieCounter
         return lines;
     }
 
-    public int ElfWithMaximumCalories()
+    public ElfCalories ElfWithMaximumCalories()
     {
-        int elf = 1;
+        int elfNumber = 1;
         int maxTotal = 0;
-        int elfWithMaximum = 0;
+        ElfCalories elfWithMaximum = new ElfCalories(0, 0);
 
         foreach (var total in TotalPerElf())
         {
             if (total > maxTotal)
             {
                 maxTotal = total;
-                elfWithMaximum = elf;
+                elfWithMaximum = new ElfCalories(elfNumber, maxTotal);
+
             }
 
-            elf++;
+            elfNumber++;
         }
 
         return elfWithMaximum;
