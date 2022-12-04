@@ -1,16 +1,23 @@
 namespace DayOne;
 
-public static class CalorieCounter
+public class CalorieCounter
 {
-    public static string[] Lines()
+    private readonly string fileName;
+
+    public CalorieCounter(string fileName)
     {
-        using var sr = new StreamReader("test.txt");
+        this.fileName = fileName;
+    }
+
+    public string[] Lines()
+    {
+        using var sr = new StreamReader(fileName);
         var text = sr.ReadToEnd();
         var lines = text.Split("\n");
         return lines;
     }
 
-    public static int ElfWithMaximumCalories()
+    public int ElfWithMaximumCalories()
     {
         int elf = 1;
         int maxTotal = 0;
@@ -30,7 +37,7 @@ public static class CalorieCounter
         return elfWithMaximum;
     }
 
-    public static IList<int> TotalPerElf()
+    public IList<int> TotalPerElf()
     {
         var totalPerElf = new List<int>();
         var lines = Lines();
