@@ -62,4 +62,9 @@ public class CalorieCounter
 
         return totalPerElf;
     }
+
+    public int TotalCaloriesOfTopThreeElves()
+    {
+        return TotalPerElf().OrderByDescending(elfTotal => elfTotal).Take(3).Sum(elfTotal => elfTotal);
+    }
 }
