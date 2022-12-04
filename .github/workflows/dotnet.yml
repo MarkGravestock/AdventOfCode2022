@@ -26,12 +26,9 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: XUnit Viewer
-      id: xunit-viewer
-      uses: AutoModality/action-xunit-viewer@v1  
-    - name: Attach the report
-      uses: actions/upload-artifact@v1
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
       with:
-        name: ${{ steps.xunit-viewer.outputs.report-name }}
-        path: ${{ steps.xunit-viewer.outputs.report-dir }}
+        nunit_files: "test-results/nunit/**/*.xml"
       
