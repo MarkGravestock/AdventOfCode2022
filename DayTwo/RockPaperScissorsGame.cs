@@ -1,20 +1,16 @@
-﻿namespace DayTwo;
+﻿using Common;
+
+namespace DayTwo;
 
 public class RockPaperScissorsGame
 {
+    private readonly FileReader fileReader;
+
+
     public RockPaperScissorsGame(string fileName)
     {
-        this.fileName = fileName;
+        fileReader = new FileReader(fileName);
     }
-
-    public IEnumerable<string> Lines()
-    {
-        using var sr = new StreamReader(fileName);
-        var text = sr.ReadToEnd();
-        var lines = text.Split("\n");
-        return lines.Select(x => x.Trim()).Where(x => x != String.Empty);
-    }
-
 
     private Dictionary<string, Play> plays = new()
     {
@@ -46,8 +42,6 @@ public class RockPaperScissorsGame
         { Play.Paper, Play.Scissors },
         { Play.Scissors, Play.Rock },
     };
-
-    private readonly string fileName;
 
     public int CalculateRoundScoreFor(string round)
     {
@@ -84,12 +78,12 @@ public class RockPaperScissorsGame
 
     public int CalculateGameScore()
     {
-        return Lines().Select(CalculateRoundScoreFor).Sum();
+        return fileReader.Lines().Select(CalculateRoundScoreFor).Sum();
     }
 
     public int CalculateGameScoreForRealStrategy()
     {
-        return Lines().Select(CalculateRoundScoreForRealStrategy).Sum();
+        return fileReader.Lines().Select(CalculateRoundScoreForRealStrategy).Sum();
     }
 
 }

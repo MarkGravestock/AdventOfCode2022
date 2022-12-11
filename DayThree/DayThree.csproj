@@ -22,17 +22,4 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="test.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="input.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
-    </ItemGroup>
-
 </Project>
