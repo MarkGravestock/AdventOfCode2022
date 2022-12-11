@@ -11,15 +11,29 @@ public class AssignmentChecker
         return secondRange.Includes(firstRange) || firstRange.Includes(secondRange);
     }
 
-    private static InclusiveRange CreateRangeFromAssignment(string assignment)
+    private static InclusiveRange CreateRangeFromAssignment(string assignmentDefinition)
     {
-        var firstAssignment = assignment.Split("-");
-        var firstRange = new InclusiveRange(int.Parse(firstAssignment[0]), int.Parse(firstAssignment[1]));
-        return firstRange;
+        var assignment = assignmentDefinition.Split("-");
+        return new InclusiveRange(int.Parse(assignment[0]), int.Parse(assignment[1]));
     }
 
     public int TotalSectionsCompletelyContainingTheOther(IEnumerable<string> sectionAssignments)
     {
         return sectionAssignments.Select(DoesSectionCompletelyContainTheOther).Count(x => x);
     }
+
+    public bool DoesSectionOverlapTheOther(string sectionAssignments)
+    {
+        var assignments = sectionAssignments.Split(",");
+        var firstRange = CreateRangeFromAssignment(assignments[0]);
+        var secondRange = CreateRangeFromAssignment(assignments[1]);;
+
+        return secondRange.Overlaps(firstRange) || firstRange.Overlaps(secondRange);
+    }
+
+    public int TotalSectionsOverlappingTheOther(IEnumerable<string> sectionAssignments)
+    {
+        return sectionAssignments.Select(DoesSectionOverlapTheOther).Count(x => x);
+    }
+
 }

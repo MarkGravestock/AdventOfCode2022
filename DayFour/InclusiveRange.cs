@@ -6,4 +6,9 @@ public record InclusiveRange(int start, int end)
     {
         return start <= other.start && end >= other.end;
     }
+
+    public bool Overlaps(InclusiveRange other)
+    {
+        return start <= other.end && end >= other.start;
+    }
 }

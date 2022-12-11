@@ -13,4 +13,11 @@ public class DayFourActualTests
         new AssignmentChecker().TotalSectionsCompletelyContainingTheOther(fileReader.Lines()).Should().Be(584);
     }
 
+    [Fact]
+    public void it_can_assignments_overlaps_the_other()
+    {
+        var fileReader = new FileReader("input.txt");
+
+        new AssignmentChecker().TotalSectionsOverlappingTheOther(fileReader.Lines()).Should().Be(933);
+    }
 }
