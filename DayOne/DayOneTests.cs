@@ -4,7 +4,7 @@ namespace DayOne;
 
 public class DayOneTests
 {
-    private readonly CalorieCounter sut = new CalorieCounter("test.txt");
+    private readonly CalorieCounter sut = new("test.txt");
 
     [Fact]
     public void the_elf_with_the_most_calories_is_number_four()

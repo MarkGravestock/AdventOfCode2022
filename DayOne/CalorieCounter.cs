@@ -43,21 +43,14 @@ public class CalorieCounter
     public IList<int> TotalPerElf()
     {
         var totalPerElf = new List<int>();
-        var lines = Lines();
-        var currentElfTotal = 0;
+        var lines = Lines().Publish();
 
-        foreach (var inputLine in lines)
+
+        while (true)
         {
-            var line = inputLine.Trim();
-
-            if (line == String.Empty)
-            {
-                totalPerElf.Add(currentElfTotal);
-                currentElfTotal = 0;
-                continue;
-            }
-
-            currentElfTotal += int.Parse(line);
+            var currentElfTotalCalories = lines.TakeWhile(x => x.Trim() != String.Empty).Sum(int.Parse);
+            if (currentElfTotalCalories == 0) break;
+            totalPerElf.Add(currentElfTotalCalories);
         }
 
         return totalPerElf;
