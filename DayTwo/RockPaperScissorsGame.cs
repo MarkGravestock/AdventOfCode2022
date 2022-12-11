@@ -1,26 +1,8 @@
-using FluentAssertions;
+﻿namespace DayTwo;
 
-namespace DayTwo;
-
-public class DayTwoTests
+public class RockPaperScissorsGame
 {
-    [Fact]
-    public void it_can_calculate_the_result_of_one_round()
-    {
-        new RockScissorsPaperGame("ignored").CalculateRoundScoreFor("A Y").Should().Be(8);
-    }
-
-    [Fact]
-    public void it_can_calculate_the_result_of_a_game()
-    {
-        new RockScissorsPaperGame("test.txt").CalculateGameScore().Should().Be(15);
-    }
-
-}
-
-public class RockScissorsPaperGame
-{
-    public RockScissorsPaperGame(string fileName)
+    public RockPaperScissorsGame(string fileName)
     {
         this.fileName = fileName;
     }
@@ -44,6 +26,27 @@ public class RockScissorsPaperGame
         { "Z", Play.Scissors },
     };
 
+    private Dictionary<string, Outcome> outcomes = new()
+    {
+        { "X", Outcome.Lost },
+        { "Y", Outcome.Draw },
+        { "Z", Outcome.Won },
+    };
+
+    private readonly Dictionary<Play, Play> loseStrategy = new()
+    {
+        { Play.Rock, Play.Scissors },
+        { Play.Paper, Play.Rock },
+        { Play.Scissors, Play.Paper },
+    };
+
+    private readonly Dictionary<Play, Play> winStrategy = new()
+    {
+        { Play.Rock, Play.Paper },
+        { Play.Paper, Play.Scissors },
+        { Play.Scissors, Play.Rock },
+    };
+
     private readonly string fileName;
 
     public int CalculateRoundScoreFor(string round)
@@ -53,6 +56,16 @@ public class RockScissorsPaperGame
 
         var outcome = IsDraw(opponentPlay, myPlay) ? Outcome.Draw :
             OpponentHasWon(opponentPlay, myPlay) ? Outcome.Lost : Outcome.Won;
+
+        return (int)outcome + (int)myPlay;
+    }
+
+    public int CalculateRoundScoreForRealStrategy(string round)
+    {
+        var opponentPlay = plays[round.Substring(0, 1)];
+        var outcome = outcomes[round.Substring(2, 1)];
+
+        var myPlay = outcome == Outcome.Draw ? opponentPlay : outcome == Outcome.Lost ? loseStrategy[opponentPlay] : winStrategy[opponentPlay];
 
         return (int)outcome + (int)myPlay;
     }
@@ -73,18 +86,10 @@ public class RockScissorsPaperGame
     {
         return Lines().Select(CalculateRoundScoreFor).Sum();
     }
-}
 
-internal enum Outcome
-{
-    Lost = 0,
-    Draw = 3,
-    Won = 6
-}
+    public int CalculateGameScoreForRealStrategy()
+    {
+        return Lines().Select(CalculateRoundScoreForRealStrategy).Sum();
+    }
 
-internal enum Play
-{
-    Rock = 1,
-    Paper = 2,
-    Scissors = 3
 }
