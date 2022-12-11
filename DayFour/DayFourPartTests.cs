@@ -2,7 +2,7 @@ using FluentAssertions;
 
 namespace DayFour;
 
-public class DayFourPartOneTests
+public class DayFourPartTests
 {
     [Theory]
     [InlineData("2-4,2-4", true)]
