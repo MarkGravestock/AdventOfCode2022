@@ -25,10 +25,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --test-adapter-path:. --logger:xunit
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        nunit_files: "test-results/nunit/**/*.xml"
-      
+        xunit_files: "TestResults/**/*.xml"
+
