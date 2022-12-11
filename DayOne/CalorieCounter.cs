@@ -1,6 +1,6 @@
 namespace DayOne;
 
-public readonly record struct ElfCalories(int Number, int Calories);
+public readonly record struct ElfNumberAndCalories(int Number, int Calories);
 
 public class CalorieCounter
 {
@@ -19,32 +19,20 @@ public class CalorieCounter
         return lines;
     }
 
-    public ElfCalories ElfWithMaximumCalories()
+    public ElfNumberAndCalories ElfWithMaximumCalories()
     {
         int elfNumber = 1;
-        int maxTotal = 0;
-        ElfCalories elfWithMaximum = new ElfCalories(0, 0);
 
-        foreach (var total in TotalPerElf())
-        {
-            if (total > maxTotal)
-            {
-                maxTotal = total;
-                elfWithMaximum = new ElfCalories(elfNumber, maxTotal);
-
-            }
-
-            elfNumber++;
-        }
-
-        return elfWithMaximum;
+        return TotalPerElf()
+            .Select(elfCalories => new ElfNumberAndCalories(elfNumber++, elfCalories))
+            .Aggregate(new ElfNumberAndCalories(0, 0),
+                (maxCalories, current) => current.Calories > maxCalories.Calories ? current : maxCalories);
     }
 
     public IList<int> TotalPerElf()
     {
         var totalPerElf = new List<int>();
         var lines = Lines().Publish();
-
 
         while (true)
         {
