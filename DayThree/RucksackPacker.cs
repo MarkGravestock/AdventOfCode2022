@@ -46,8 +46,11 @@ public class RucksackPacker
     public string FindGroupCommonItemIn(IEnumerable<string> groupItems)
     {
         var allGroupItems = groupItems.ToArray();
-        var commonItem = allGroupItems[0].ToCharArray().Intersect(allGroupItems[1].ToCharArray())
+
+        var commonItem = allGroupItems[0].ToCharArray()
+            .Intersect(allGroupItems[1].ToCharArray())
             .Intersect(allGroupItems[2].ToCharArray());
+
         return commonItem.Single().ToString();
     }
 
