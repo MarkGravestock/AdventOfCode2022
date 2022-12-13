@@ -111,6 +111,72 @@ public class DaySevenTests
         fileSystem.Size().Should().Be(48381165);
     }
 
+    [Fact] public void it_can_calculate_the_total_size_of_all_directories_with_the_given_size()
+    {
+        var fileSystem = new FileSystem();
+        fileSystem.CreateFromInteractions(new[]
+        {
+            "$ cd /",
+            "$ ls",
+            "dir a",
+            "14848514 b.txt",
+            "8504156 c.dat",
+            "dir d",
+            "$ cd a",
+            "$ ls",
+            "dir e",
+            "29116 f",
+            "2557 g",
+            "62596 h.lst",
+            "$ cd e",
+            "$ ls",
+            "584 i",
+            "$ cd ..",
+            "$ cd ..",
+            "$ cd d",
+            "$ ls",
+            "4060174 j",
+            "8033020 d.log",
+            "5626152 d.ext",
+            "7214296 k"
+        });
+
+        fileSystem.SizeOfMatchingDirectories().Should().Be(95437);
+    }
+
+    [Fact] public void it_can_calculate_the_total_size_of_the_directory_to_delete_for_part_two()
+    {
+        var fileSystem = new FileSystem();
+        fileSystem.CreateFromInteractions(new[]
+        {
+            "$ cd /",
+            "$ ls",
+            "dir a",
+            "14848514 b.txt",
+            "8504156 c.dat",
+            "dir d",
+            "$ cd a",
+            "$ ls",
+            "dir e",
+            "29116 f",
+            "2557 g",
+            "62596 h.lst",
+            "$ cd e",
+            "$ ls",
+            "584 i",
+            "$ cd ..",
+            "$ cd ..",
+            "$ cd d",
+            "$ ls",
+            "4060174 j",
+            "8033020 d.log",
+            "5626152 d.ext",
+            "7214296 k"
+        });
+
+        fileSystem.SizeOfDirectoryToDelete().Should().Be(24933642);
+    }
+    
     public class FileSystem
     {
         private Directory rootDirectory = new("/", null);
@@ -191,6 +257,21 @@ public class DaySevenTests
         {
             return rootDirectory.ToString();
         }
+
+        public int SizeOfMatchingDirectories()
+        {
+            return rootDirectory.DirectorySizeDetails().Where(x => x.size <= 100000).Sum(x => x.size);
+        }
+
+        public int SizeOfDirectoryToDelete()
+        {
+            var fileSystemSize = 70_000_000;
+            var totalFreeSpace = fileSystemSize - rootDirectory.Size();
+
+            var spaceToFree = 30_000_000 - totalFreeSpace;
+            
+            return rootDirectory.DirectorySizeDetails().Where(x => x.size >= spaceToFree).OrderBy(x => x.size).First().size;
+        }
     }
 
     public class Directory : IDirectoryContent
@@ -220,6 +301,13 @@ public class DaySevenTests
         {
             return contents.Sum(x => x.Size());
         }
+
+        public IEnumerable<SizeDetails> DirectorySizeDetails()
+        {
+            var currentDirectory = new SizeDetails( _directoryName, contents.Sum(x => x.Size()));
+            return contents.SelectMany(contents => contents.DirectorySizeDetails()).Append(currentDirectory);
+        }
+
 
         public override string ToString()
         {
@@ -269,6 +357,11 @@ public class DaySevenTests
             return _fileSize;
         }
 
+        public IEnumerable<SizeDetails> DirectorySizeDetails()
+        {
+            return Array.Empty<SizeDetails>();
+        }
+
         public override string ToString()
         {
             return $"- {_fileName} (file, size={_fileSize})";
@@ -277,7 +370,10 @@ public class DaySevenTests
 
     internal interface IDirectoryContent
     {
-        public string Name();
-        public int Size();
+        string Name();
+        int Size();
+        IEnumerable<SizeDetails> DirectorySizeDetails();
     }
 }
+
+public record SizeDetails(string name, int size);
