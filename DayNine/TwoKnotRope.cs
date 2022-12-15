@@ -1,18 +1,18 @@
 ﻿namespace DayNine;
 
-public class Rope
+public class TwoKnotRope
 {
-    private Location headLocation;
-    private readonly List<Location> tailLocations = new();
+    private Location headKnotLocation;
+    private readonly List<Location> tailKnotLocations = new();
 
-    public Rope(Location headLocation, Location tailLocation)
+    public TwoKnotRope(Location headKnotLocation, Location tailLocation)
     {
-        this.headLocation = headLocation;
-        tailLocations.Add(tailLocation);
+        this.headKnotLocation = headKnotLocation;
+        tailKnotLocations.Add(tailLocation);
     }
 
-    public Location HeadLocation => headLocation;
-    public Location TailLocation => tailLocations.Last();
+    public Location HeadKnotLocation => headKnotLocation;
+    public Location TailLocation => tailKnotLocations.Last();
 
     public void ApplyHeadMove(string moveInstruction)
     {
@@ -36,12 +36,12 @@ public class Rope
 
     private void MakeMove(Move move)
     {
-        headLocation = headLocation.Apply(move);
-        tailLocations.Add(TailLocation.Follow(headLocation));
+        headKnotLocation = headKnotLocation.Apply(move);
+        tailKnotLocations.Add(TailLocation.Follow(headKnotLocation));
     }
 
     public int NumberOfUniqueLocationsTailVisited()
     {
-        return tailLocations.Distinct().Count();
+        return tailKnotLocations.Distinct().Count();
     }
 }

@@ -13,10 +13,24 @@ public class DayNineActualTest
         var initialHead = new Location(0, 0);
         var initialTail = new Location(0, 0);
 
-        var sut = new Rope(initialHead, initialTail);
+        var sut = new TwoKnotRope(initialHead, initialTail);
 
         fileReader.Lines().ForEach(moveInstruction => sut.ApplyHeadMove(moveInstruction));
 
         sut.NumberOfUniqueLocationsTailVisited().Should().Be(6406);
+    }
+
+    [Fact]
+    public void it_can_count_the_unique_locations_that_the_tail_visited_for_part_two()
+    {
+        FileReader fileReader = new("input.txt");
+
+        var initialLocation = new Location(0, 0);
+
+        var sut = new TenKnotRope(initialLocation);
+
+        fileReader.Lines().ForEach(moveInstruction => sut.ApplyHeadMove(moveInstruction));
+
+        sut.NumberOfUniqueLocationsTailVisited().Should().Be(2643);
     }
 }
