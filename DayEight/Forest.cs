@@ -5,18 +5,18 @@ namespace DayEight;
 public class Forest
 {
     private readonly string[] forestDefinition;
+    private readonly int[,] forest;
 
     public Forest(IEnumerable<string> forestDefinition)
     {
         this.forestDefinition = forestDefinition.ToArray();
+        forest = new int[this.forestDefinition[0].Length, this.forestDefinition.Length];
+        this.forestDefinition.ForEach((row, y) => row.ToCharArray().ForEach((height, x) => forest[x,y] = int.Parse(height.ToString())));
     }
 
     public int CalculateTotalVisibleTrees()
     {
-        var forest = new int[forestDefinition[0].Length, forestDefinition.Length];
         var isVisible = new bool[forestDefinition[0].Length, forestDefinition.Length];
-        
-        forestDefinition.ForEach((row, y) => row.ToCharArray().ForEach((height, x) => forest[x,y] = int.Parse(height.ToString())));
 
         visibleFromLeft(forestDefinition, forest, isVisible);
         visibleFromRight(forestDefinition, forest, isVisible);
@@ -59,7 +59,7 @@ public class Forest
             }
         }
     }
-    
+
     private static void visibleFromRight(string[] forestDefinition, int[,] forest, bool[,] isVisible)
     {
         for (int y = 0; y < forestDefinition.Length; y++)
@@ -76,7 +76,7 @@ public class Forest
             }
         }
     }
-    
+
     private static void visibleFromTop(string[] forestDefinition, int[,] forest, bool[,] isVisible)
     {
         for (int x = 0; x < forestDefinition[0].Length; x++)
@@ -110,5 +110,40 @@ public class Forest
             }
         }
     }
-    
+
+    public int CalculateViewingDistanceToLeftFor(int x, int y)
+    {
+        int currentHeight = forest[x, y];
+        int viewingDistance = 0;
+
+        while (x > 0)
+        {
+            x--;
+            viewingDistance++;
+            if (forest[x, y] >= currentHeight)
+            {
+                break;
+            }
+        }
+
+        return viewingDistance;
+    }
+
+    public int CalculateViewingDistanceToRightFor(int x, int y)
+    {
+        int currentHeight = forest[x, y];
+        int viewingDistance = 0;
+
+        while (x < forest.GetLength(0))
+        {
+            x++;
+            viewingDistance++;
+            if (forest[x, y] >= currentHeight)
+            {
+                break;
+            }
+        }
+
+        return viewingDistance;
+    }
 }
