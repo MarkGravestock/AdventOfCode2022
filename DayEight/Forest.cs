@@ -113,30 +113,23 @@ public class Forest
 
     public int CalculateViewingDistanceToLeftFor(int x, int y)
     {
-        int currentHeight = forest[x, y];
-        int viewingDistance = 0;
-
-        while (x > 0)
-        {
-            x--;
-            viewingDistance++;
-            if (forest[x, y] >= currentHeight)
-            {
-                break;
-            }
-        }
-
-        return viewingDistance;
+        return CalculateViewingDistanceFor(x, y, -1);
     }
 
     public int CalculateViewingDistanceToRightFor(int x, int y)
     {
+        return CalculateViewingDistanceFor(x, y, 1);
+    }
+
+    public int CalculateViewingDistanceFor(int x, int y, int xDelta, int yDelta = 0)
+    {
         int currentHeight = forest[x, y];
         int viewingDistance = 0;
 
-        while (x < forest.GetLength(0))
+        while (x > 0 && x < forest.GetLength(0) - 1 && y > 0 && y < forest.GetLength(1) - 1)
         {
-            x++;
+            x += xDelta;
+            y += yDelta;
             viewingDistance++;
             if (forest[x, y] >= currentHeight)
             {
@@ -146,4 +139,30 @@ public class Forest
 
         return viewingDistance;
     }
+
+    public int CalculateViewingDistanceToTopFor(int x, int y)
+    {
+        return CalculateViewingDistanceFor(x, y, 0, -1);
+    }
+
+    public int CalculateViewingDistanceToBottomFor(int x, int y)
+    {
+        return CalculateViewingDistanceFor(x, y, 0, 1);
+    }
+
+    public int CalculateScenicScoreFor(int x, int y)
+    {
+        return CalculateViewingDistanceToLeftFor(x, y) *
+               CalculateViewingDistanceToRightFor(x, y) *
+               CalculateViewingDistanceToTopFor(x, y) *
+               CalculateViewingDistanceToBottomFor(x, y);
+    }
+
+    public int CalculateMaxScenicScoreForForest()
+    {
+        IEnumerable<(int, int)> trees = Enumerable.Range(0,forest.GetLength(0)).SelectMany((row, i) => Enumerable.Range(0, forest.GetLength(1)).Select((_, j) => (i, j)));
+
+        return trees.Select(location => CalculateScenicScoreFor(location.Item1, location.Item2)).Max();
+    }
+
 }

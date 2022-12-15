@@ -15,4 +15,13 @@ public class DayEightActualTest
         sut.CalculateTotalVisibleTrees().Should().Be(1662);
     }
 
+    [Fact]
+    public void calculate_max_scenic_score_for_part_two()
+    {
+        FileReader fileReader = new("input.txt");
+
+        var sut = new Forest(fileReader.Lines());
+
+        sut.CalculateMaxScenicScoreForForest().Should().Be(537600);
+    }
 }
