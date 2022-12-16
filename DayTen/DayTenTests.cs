@@ -1,3 +1,4 @@
+using System.Text;
 using Common;
 using FluentAssertions;
 
@@ -32,6 +33,47 @@ public class DayTenTests
         sut.GetSignalStrengthAtCycle(140).Should().Be(2940);
         sut.GetSignalStrengthAtCycle(180).Should().Be(2880);
         sut.GetSignalStrengthAtCycle(220).Should().Be(3960);
+    }
+
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(2, true)]
+    [InlineData(3, false)]
+    [InlineData(4, false)]
+    [InlineData(5, true)]
+    [InlineData(8, false)]
+    [InlineData(9, true)]
+    [InlineData(10, true)]
+    [InlineData(11, false)]
+    public void it_can_determine_pixel_state(int cycle, bool state)
+    {
+        FileReader fileReader = new("example_input.txt");
+
+        var sut = new Cpu();
+
+        fileReader.Lines().ForEach(cpuInstruction => sut.RunInstruction(cpuInstruction));
+
+        sut.IsPixelOnForCycle(cycle).Should().Be(state);
+    }
+
+    [Fact]
+    public void it_can_draw_pixel_state()
+    {
+        FileReader fileReader = new("example_input.txt");
+
+        var sut = new Cpu();
+
+        fileReader.Lines().ForEach(cpuInstruction => sut.RunInstruction(cpuInstruction));
+
+        var expected = new StringBuilder();
+        expected.AppendLine("##..##..##..##..##..##..##..##..##..##..");
+        expected.AppendLine("###...###...###...###...###...###...###.");
+        expected.AppendLine("####....####....####....####....####....");
+        expected.AppendLine("#####.....#####.....#####.....#####.....");
+        expected.AppendLine("######......######......######......####");
+        expected.AppendLine("#######.......#######.......#######.....");
+
+        sut.ShowCrtUptoCycle(240).Should().Be(expected.ToString());
     }
 
     [Fact]
@@ -87,5 +129,31 @@ public class Cpu
     public int GetTotalInterestingSignalStrengths()
     {
         return Enumerable.Range(0, registerXAtCycle.Count() / 40).Select(x => GetSignalStrengthAtCycle(x * 40 + 20)).Sum();
+    }
+
+    public bool IsPixelOnForCycle(int cycle)
+    {
+        var position = (cycle - 1) % 40;
+        var registerStateAtCycle = GetRegisterStateAtCycle(cycle);
+        var startOfSprite = registerStateAtCycle - 1;
+        var endOfSprite = registerStateAtCycle + 1;
+
+        return (position >= startOfSprite && position <= endOfSprite);
+    }
+
+    public string ShowCrtUptoCycle(int finalCycle)
+    {
+        StringBuilder crt = new();
+
+        Enumerable.Range(1, finalCycle).ForEach((cycle) =>
+        {
+            crt.Append(IsPixelOnForCycle(cycle) ? "#" : ".");
+            if (cycle % 40 == 0)
+            {
+                crt.AppendLine();
+            }
+        });
+
+        return crt.ToString();
     }
 }
