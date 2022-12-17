@@ -62,7 +62,7 @@ public class DayElevenTests
     }
 
     [Fact]
-    public void monkey_zero_can_process_their_items()
+    public void monkeys_can_play_rounds()
     {
         Monkey[] monkeys = new Monkey[4];
 
