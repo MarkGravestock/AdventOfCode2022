@@ -8,6 +8,8 @@
         <IsPackable>false</IsPackable>
 
         <OutputType>Library</OutputType>
+
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

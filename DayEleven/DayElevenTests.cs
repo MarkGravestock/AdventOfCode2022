@@ -11,25 +11,25 @@ public class DayElevenTests
 
         monkeys[0] = new Monkey
         (
-            items: new List<int> {79, 98},
+            items: [79, 98],
             operation: old => old * 19,
             test: 23
         );
 
         monkeys[1] = new Monkey(
-            items: new List<int> {54, 65, 75, 74},
+            items: [54, 65, 75, 74],
             operation: old => old + 6,
             test: 19
         );
 
         monkeys[2] = new Monkey(
-            items: new List<int> {79, 60, 97},
+            items: [79, 60, 97],
             operation: old => old * old,
             test: 13
         );
 
         monkeys[3] = new Monkey(
-            items: new List<int> {74},
+            items: [74],
             operation: old => old + 3,
             test: 17
         );
@@ -68,25 +68,25 @@ public class DayElevenTests
 
         monkeys[0] = new Monkey
         (
-            items: new List<int> {79, 98},
+            items: [79, 98],
             operation: old => old * 19,
             test: 23
         );
 
         monkeys[1] = new Monkey(
-            items: new List<int> {54, 65, 75, 74},
+            items: [54, 65, 75, 74],
             operation: old => old + 6,
             test: 19
         );
 
         monkeys[2] = new Monkey(
-            items: new List<int> {79, 60, 97},
+            items: [79, 60, 97],
             operation: old => old * old,
             test: 13
         );
 
         monkeys[3] = new Monkey(
-            items: new List<int> {74},
+            items: [74],
             operation: old => old + 3,
             test: 17
         );
@@ -155,8 +155,8 @@ public class Monkey
     private readonly List<int> items;
     private readonly Func<int, int> operation;
     private readonly int test;
-    private Monkey ifTrue;
-    private Monkey ifFalse;
+    private Monkey? ifTrue;
+    private Monkey? ifFalse;
 
     private int inspectionCount;
 
@@ -184,7 +184,7 @@ public class Monkey
             .ForEach(z =>
             {
                 var thrownTo = (z.Item2 % test == 0) ? ifTrue : ifFalse;
-                thrownTo.Throw(z.Item2);
+                thrownTo?.Throw(z.Item2);
             });
 
         inspectionCount += items.Count();
