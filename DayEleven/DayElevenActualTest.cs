@@ -139,7 +139,7 @@ public class DayElevenActualTest
         monkeys[1].IfTrue(monkeys[4]);
         monkeys[1].IfFalse(monkeys[6]);
 
-        ///2
+        //2
         monkeys[2].IfTrue(monkeys[7]);
         monkeys[2].IfFalse(monkeys[5]);
 

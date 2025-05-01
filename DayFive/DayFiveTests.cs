@@ -1,6 +1,6 @@
 using FluentAssertions;
 
-namespace DaySix;
+namespace DayFive;
 
 public class DayFiveTests
 {

@@ -9,12 +9,11 @@ public class DaySevenTests
     public void it_can_create_a_sub_directory_from_commands()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a"
-        });
+        ]);
 
         fileSystem.ToString().Should().ContainEquivalentOf(
             "- / (dir)" +
@@ -26,15 +25,14 @@ public class DaySevenTests
     public void it_can_create_files_and_subdirectories_from_commands()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a",
             "14848514 b.txt",
             "8504156 c.dat",
             "dir d"
-        });
+        ]);
 
         fileSystem.ToString().Should().BeEquivalentTo(
             "- / (dir)" +
@@ -49,8 +47,7 @@ public class DaySevenTests
     public void it_can_change_into_a_subdirectory()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a",
@@ -63,7 +60,7 @@ public class DaySevenTests
             "29116 f",
             "2557 g",
             "62596 h.lst"
-        });
+        ]);
 
         fileSystem.ToString().Should().ContainEquivalentOf(
             "- / (dir)" +
@@ -81,8 +78,7 @@ public class DaySevenTests
     [Fact] public void it_can_calculate_the_total_size_of_all_directories()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a",
@@ -106,7 +102,7 @@ public class DaySevenTests
             "8033020 d.log",
             "5626152 d.ext",
             "7214296 k"
-        });
+        ]);
 
         fileSystem.Size().Should().Be(48381165);
     }
@@ -114,8 +110,7 @@ public class DaySevenTests
     [Fact] public void it_can_calculate_the_total_size_of_all_directories_with_the_given_size()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a",
@@ -139,7 +134,7 @@ public class DaySevenTests
             "8033020 d.log",
             "5626152 d.ext",
             "7214296 k"
-        });
+        ]);
 
         fileSystem.SizeOfMatchingDirectories().Should().Be(95437);
     }
@@ -147,8 +142,7 @@ public class DaySevenTests
     [Fact] public void it_can_calculate_the_total_size_of_the_directory_to_delete_for_part_two()
     {
         var fileSystem = new FileSystem();
-        fileSystem.CreateFromInteractions(new[]
-        {
+        fileSystem.CreateFromInteractions([
             "$ cd /",
             "$ ls",
             "dir a",
@@ -172,17 +166,16 @@ public class DaySevenTests
             "8033020 d.log",
             "5626152 d.ext",
             "7214296 k"
-        });
+        ]);
 
         fileSystem.SizeOfDirectoryToDelete().Should().Be(24933642);
     }
     
     public class FileSystem
     {
-        private Directory rootDirectory = new("/", null);
+        private readonly Directory rootDirectory = new("/", null);
 
-        private Directory currentDirectory = null;
-        private Directory parentDirectory = null;
+        private Directory? currentDirectory;
 
         public int Size()
         {
@@ -276,36 +269,36 @@ public class DaySevenTests
 
     public class Directory : IDirectoryContent
     {
-        private readonly string _directoryName;
-        private readonly Directory _parentDirectory;
+        private readonly string directoryName;
+        private readonly Directory parentDirectory;
 
-        private List<IDirectoryContent> contents = new();
+        private readonly List<IDirectoryContent> directoryContents = new();
 
         internal Directory(string directoryName, Directory parentDirectory)
         {
-            _directoryName = directoryName;
-            _parentDirectory = parentDirectory;
+            this.directoryName = directoryName;
+            this.parentDirectory = parentDirectory;
         }
 
         public void AddDirectory(string directoryName, Directory parentDirectory)
         {
-            contents.Add(new Directory(directoryName, parentDirectory));
+            directoryContents.Add(new Directory(directoryName, parentDirectory));
         }
 
         public string Name()
         {
-            return _directoryName;
+            return directoryName;
         }
 
         public int Size()
         {
-            return contents.Sum(x => x.Size());
+            return directoryContents.Sum(x => x.Size());
         }
 
         public IEnumerable<SizeDetails> DirectorySizeDetails()
         {
-            var currentDirectory = new SizeDetails( _directoryName, contents.Sum(x => x.Size()));
-            return contents.SelectMany(contents => contents.DirectorySizeDetails()).Append(currentDirectory);
+            var currentDirectory = new SizeDetails(directoryContents.Sum(x => x.Size()));
+            return directoryContents.SelectMany(contents => contents.DirectorySizeDetails()).Append(currentDirectory);
         }
 
 
@@ -313,62 +306,62 @@ public class DaySevenTests
         {
             var builder = new StringBuilder();
 
-            builder.Append($"- {_directoryName} (dir)");
+            builder.Append($"- {directoryName} (dir)");
 
-            contents.ForEach(content => builder.Append($"{content.ToString()}"));
+            directoryContents.ForEach(content => builder.Append($"{content.ToString()}"));
 
             return builder.ToString();
         }
 
         public void AddFile(int fileSize, string fileName)
         {
-            contents.Add(new File(fileSize, fileName));
+            directoryContents.Add(new File(fileSize, fileName));
         }
 
         public Directory FindNamedDirectory(string name)
         {
-            return (Directory)contents.First(item => item.Name() == name);
+            return (Directory)directoryContents.First(item => item.Name() == name);
         }
 
         public Directory ParentDirectory()
         {
-            return _parentDirectory;
+            return parentDirectory;
         }
     }
 
-    internal class File : IDirectoryContent
+    private class File : IDirectoryContent
     {
-        private readonly int _fileSize;
-        private readonly string _fileName;
+        private readonly int fileSize;
+        private readonly string fileName;
 
         public File(int fileSize, string fileName)
         {
-            _fileSize = fileSize;
-            _fileName = fileName;
+            this.fileSize = fileSize;
+            this.fileName = fileName;
         }
 
         public string Name()
         {
-            return _fileName;
+            return fileName;
         }
 
         public int Size()
         {
-            return _fileSize;
+            return fileSize;
         }
 
         public IEnumerable<SizeDetails> DirectorySizeDetails()
         {
-            return Array.Empty<SizeDetails>();
+            return [];
         }
 
         public override string ToString()
         {
-            return $"- {_fileName} (file, size={_fileSize})";
+            return $"- {fileName} (file, size={fileSize})";
         }
     }
 
-    internal interface IDirectoryContent
+    private interface IDirectoryContent
     {
         string Name();
         int Size();
@@ -376,4 +369,4 @@ public class DaySevenTests
     }
 }
 
-public record SizeDetails(string name, int size);
+public record SizeDetails(int size);

@@ -1,7 +1,7 @@
 ﻿using Common;
 using FluentAssertions;
 
-namespace DaySix;
+namespace DayFive;
 
 public class DayFiveActualTests
 {
